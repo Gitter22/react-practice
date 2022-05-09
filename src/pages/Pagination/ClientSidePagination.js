@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ClientSidePagination = () => {
-    return (
-        <div>Client Side Pagination</div>
-    )
-}
+  return <div>Client Side Pagination</div>;
+};
 
-export default ClientSidePagination
+export default ClientSidePagination;
