@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Card } from "antd";
+import "../../App.css";
+import { Card } from "antd";
+import ReactPaginate from "react-paginate";
 
 const { Meta } = Card;
 
 const ClientSidePagination = () => {
   const [posts, setPosts] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [postNumber] = useState(5);
-  console.log("dataa", posts);
+  const [pageNumber, setPageNumber] = useState(0);
 
-  const currentPageNumber = pageNumber * postNumber - postNumber;
-  const paginatedPosts = posts.splice(currentPageNumber, postNumber);
+  const [Loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handlePrev = () => {
-    if (pageNumber === 1) return;
-    setPageNumber(pageNumber - 1);
-  };
-  const handleNext = () => {
-    setPageNumber(pageNumber + 1);
-  };
+  const usersPerPage = 5;
+  const pagesVisited = pageNumber * usersPerPage;
 
   var myHeaders = new Headers();
   myHeaders.append("Accept", "application/vnd.github.v3+json");
   myHeaders.append(
     "Authorization",
-    "token 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"
+    "token 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"
   );
 
   var requestOptions = {
@@ -34,32 +29,65 @@ const ClientSidePagination = () => {
   };
 
   useEffect(() => {
-    fetch("https://api.github.com/users?per_page=100", requestOptions)
-      .then((res) => res.json())
-      .then((data) => {
-        setPosts(data);
-      })
-      .catch((err) => console.log("error", err));
+    setTimeout(() => {
+      clientSide();
+    }, 1000);
   }, []);
 
+  const clientSide = () => {
+    fetch("https://api.github.com/usrs?per_page=100", requestOptions)
+      .then((res) => {
+        if (!res.ok) {
+          throw Error("could not fetch data");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setPosts(data);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err.message);
+      });
+  };
+
+  const displayUser = posts
+    .slice(pagesVisited, pagesVisited + usersPerPage)
+    .map((user) => {
+      return (
+        <div className="user" key={user.id}>
+          <img src={user.avatar_url} height="150px" width="150px" alt="avtar" />
+          <h2>{user.login}</h2>
+        </div>
+      );
+    });
+  const pageCount = Math.ceil(posts.length / usersPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
+
   return (
-    <div className="site-card-wrapper">
-      <h2 className="text-primary mb-3">ClientSidePagination</h2>
-      {paginatedPosts.map((post) => (
-        <Card
-          key={post.id}
-          hoverable
-          style={{ width: 240, marginTop: "30px" }}
-          // cover={<img alt="example" src={post.avatar_url} />}
-        >
-          <h2> {post.login} </h2>
-        </Card>
-      ))}
-      <div>Page {pageNumber} </div>
-      <div style={{ marginBottom: "100px" }}>
-        <button onClick={handlePrev}>prev</button>
-        <button onClick={handleNext}>next</button>
-      </div>
+    <div className="App">
+      <Card>
+        <Meta title="Client Side pagination" className="titleCard" />
+      </Card>
+      {error && <div className="dp">{error}</div>}
+      {Loading && <div className="dp">Loading...</div>}
+      {displayUser}
+      <ReactPaginate
+        previousLabel={"Previous"}
+        nextLabel={"Next"}
+        pageCount={pageCount}
+        onPageChange={changePage}
+        containerClassName={"paginationBttns"}
+        previousLinkClassName={"previousBttn"}
+        nextLinkClassName={"nextBttn"}
+        disabledClassName={"paginationDisabled"}
+        activeClassName={"paginationActive"}
+      />
     </div>
   );
 };

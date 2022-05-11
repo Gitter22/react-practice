@@ -6,7 +6,7 @@ import ProjectList from "./pages/ProjectList";
 import ServerSidePagination from "./pages/Pagination/ServerSidePagination";
 import ClientSidePagination from "./pages/Pagination/ClientSidePagination";
 
-const { Header, Footer, Content } = Layout;
+// const { Header, Footer, Content } = Layout;
 
 function App() {
   return (
