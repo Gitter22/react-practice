@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "./ClientSidePagination.css";
+import classes from "./ClientSidePagination.module.css";
 import { Card } from "antd";
 import ReactPaginate from "react-paginate";
 
 const githubAccessToken = process.env.REACT_APP_GITHUB_TOKEN;
-console.log("Token", githubAccessToken);
 
 const { Meta } = Card;
 
@@ -55,7 +54,7 @@ const ClientSidePagination = () => {
     pagesVisited + usersPerPage
   ).map((user) => {
     return (
-      <div className="user" key={user.id}>
+      <div className={classes.user} key={user.id}>
         <img src={user.avatar_url} height="150px" width="150px" alt="avtar" />
         <h2>{user.login}</h2>
       </div>
@@ -68,23 +67,23 @@ const ClientSidePagination = () => {
   };
 
   return (
-    <div className="App">
+    <div className={classes.main}>
       <Card>
-        <Meta title="Client Side pagination" className="titleCard" />
+        <Meta title="Client Side pagination" className={classes.titleCard} />
       </Card>
-      {error && <div className="dp">{error}</div>}
-      {Loading && <div className="dp">Loading...</div>}
+      {error && <div className={classes.dp}>{error}</div>}
+      {Loading && <div className={classes.dp}>Loading...</div>}
       {displayUser}
       <ReactPaginate
         previousLabel={"Previous"}
         nextLabel={"Next"}
         pageCount={pageCount}
         onPageChange={changePage}
-        containerClassName={"paginationBttns"}
-        previousLinkClassName={"previousBttn"}
-        nextLinkClassName={"nextBttn"}
-        disabledClassName={"paginationDisabled"}
-        activeClassName={"paginationActive"}
+        containerClassName={classes.paginationBttns}
+        previousLinkClassName={classes.previousBttn}
+        nextLinkClassName={classes.nextBttn}
+        disabledClassName={classes.paginationDisabled}
+        activeClassName={classes.paginationActive}
       />
     </div>
   );
