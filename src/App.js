@@ -1,10 +1,10 @@
-import { Layout } from "antd";
+// import { Layout } from "antd";
 import { Routes, Route } from "react-router-dom";
 
 import AppLayout from "./components/Layout";
 import ProjectList from "./pages/ProjectList";
 import ServerSidePagination from "./pages/Pagination/ServerSidePagination";
-import ClientSidePagination from "./pages/Pagination/ClientSidePagination";
+import ClientSidePagination from "./pages/Pagination/ClientSidePagination/ClientSidePagination";
 
 // const { Header, Footer, Content } = Layout;
 
