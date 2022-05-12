@@ -8,20 +8,23 @@ const ServerPagination = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const userUrl =
     process.env.REACT_APP_USER_API + `?since=${pageNumber}&per_page=${10}`;
+  const AuthToken = "token" + process.env.REACT_APP_TOKEN;
 
   useEffect(() => {
     const fetchData = async () => {
-      await axios.get(userUrl).then((response) => {
-        const userList = response.data.map((res) => {
-          return {
-            id: res.id,
-            name: res.login,
-            avatar_url: res.avatar_url,
-            type: res.type,
-          };
+      await axios
+        .get(userUrl, { headers: { Authorization: AuthToken } })
+        .then((response) => {
+          const userList = response.data.map((res) => {
+            return {
+              id: res.id,
+              name: res.login,
+              avatar_url: res.avatar_url,
+              type: res.type,
+            };
+          });
+          setUserDataList(userList);
         });
-        setUserDataList(userList);
-      });
     };
     fetchData();
     console.log("useeffect");
