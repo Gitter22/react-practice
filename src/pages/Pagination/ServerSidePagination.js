@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Table, Card } from "antd";
 
+// var parse = require("parse-link-header");
+
+const gittoken = process.env.REACT_APP_GITHUB_TOKEN;
+
 const ServerSidePagination = () => {
   const [userData, setUserData] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
+
+  const handlePrev = () => {
+    setPageNumber(pageNumber - 1);
+  };
+  const handleNext = () => {
+    setPageNumber(pageNumber + 1);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [pageNumber]);
 
   const { Meta } = Card;
   var myHeaders = new Headers();
 
   myHeaders.append("Accept", "application/vnd.github.v3+json");
-  myHeaders.append(
-    "Authorization",
-    "token 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"
-  );
+  myHeaders.append("Authorization", `token ${gittoken}`);
 
   var requestOptions = {
-    method: "GET",
     headers: myHeaders,
-    redirect: "follow",
   };
-
-  useEffect(() => {
-    fetchUsers(1);
-  }, []);
 
   const columns = [
     {
@@ -39,16 +47,32 @@ const ServerSidePagination = () => {
     {
       title: "avatar_url",
       dataIndex: "avatar_url",
-      key: "url",
+      render: (row) => <img src={row} alt="" height="150px" />,
+      key: "image",
     },
   ];
 
-  const fetchUsers = (page) => {
+  // var linkHeader =
+  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="next", ` +
+  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="prev", `;
+
+  // var parsed = parse(linkHeader);
+  // console.log(parsed);
+
+  const fetchUsers = async () => {
     setLoading(true);
-    fetch(`https://api.github.com/users?page=${page}&size=5`, requestOptions)
-      .then((response) => response.json())
+    await fetch(
+      `https://api.github.com/users?since=${pageNumber}&per_page=5`,
+      requestOptions
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw Error("could not fetch data");
+        }
+        return res.json();
+      })
       .then((data) => setUserData(data))
-      .catch((error) => setError(error.message));
+      .catch((error) => setError(error));
 
     setLoading(false);
   };
@@ -58,8 +82,9 @@ const ServerSidePagination = () => {
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <p>Something went wrong..</p>;
   }
+
   return (
     <>
       <Card>
@@ -81,17 +106,17 @@ const ServerSidePagination = () => {
           }}
         >
           <Table
+            rowKey="id"
             loading={loading}
             columns={columns}
             dataSource={userData}
-            pagination={{
-              pageSize: 5,
-
-              onChange: (page) => {
-                fetchUsers(page);
-              },
-            }}
+            pagination={false}
           ></Table>
+        </div>
+        <div>Page {pageNumber} </div>
+        <div style={{ marginBottom: "50px" }}>
+          <button onClick={handlePrev}>prev</button>
+          <button onClick={handleNext}>next</button>
         </div>
       </Card>
     </>
