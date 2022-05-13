@@ -14,6 +14,8 @@ const ClientSidePagination = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [search, setSearch] = useState("");
+
   const usersPerPage = 5;
   const pagesVisited = pageNumber * usersPerPage;
 
@@ -53,16 +55,6 @@ const ClientSidePagination = () => {
     clientSide();
   }, [clientSide]);
 
-  const displayUser = users
-    .slice(pagesVisited, pagesVisited + usersPerPage)
-    .map((user) => {
-      return (
-        <div className={classes.user} key={user.id}>
-          <img src={user.avatar_url} height="150px" width="150px" alt="avtar" />
-          <h2>{user.login}</h2>
-        </div>
-      );
-    });
   const pageCount = Math.ceil(users.length / usersPerPage);
 
   const changePage = ({ selected }) => {
@@ -76,7 +68,37 @@ const ClientSidePagination = () => {
       </Card>
       {error && <div className={classes.dp}>{error}</div>}
       {isLoading && <div className={classes.dp}>Loading...</div>}
-      {displayUser}
+      <input
+        type="text"
+        placeholder="search"
+        value={search}
+        onChange={(e) => {
+          const currValue = e.target.value;
+          setSearch(currValue);
+          const filterData = users.filter((user) => {
+            console.log("filer data user", user);
+            if (
+              user.login.toLowerCase().includes(currValue, search.toLowerCase())
+            ) {
+              return user;
+            }
+          });
+          setUsers(filterData);
+        }}
+      />
+      {users.slice(pagesVisited, pagesVisited + usersPerPage).map((user) => {
+        return (
+          <div className={classes.user} key={user.id}>
+            <img
+              src={user.avatar_url}
+              height="150px"
+              width="150px"
+              alt="avtar"
+            />
+            <h2>{user.login}</h2>
+          </div>
+        );
+      })}
       <ReactPaginate
         previousLabel={"Previous"}
         nextLabel={"Next"}
