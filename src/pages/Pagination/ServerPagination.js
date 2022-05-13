@@ -55,7 +55,7 @@ const ServerPagination = () => {
       key: "avatar_url",
       render: (avatar_url) => (
         <Fragment>
-          {console.log("avatar_url: ", avatar_url)}
+          {/* {console.log("avatar_url: ", avatar_url)} */}
           <Avatar icon={<img src={avatar_url} />} />
         </Fragment>
       ),
