@@ -1,4 +1,5 @@
-import { Avatar, Button, Input, Table } from "antd";
+import { Alert, Avatar, Button, Input, Table, Spin } from "antd";
+import Search from "antd/lib/input/Search";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ServerPagination.module.css";
@@ -7,11 +8,18 @@ const ServerPagination = () => {
   const [userDataList, setUserDataList] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [searchResult, setSearchResult] = useState([]);
+  const [isSearched, setIsSearched] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isError, setIsError] = useState(false);
   const userUrl =
     process.env.REACT_APP_USER_API + `?since=${pageNumber}&per_page=${limit}`;
   const AuthToken = "token" + process.env.REACT_APP_TOKEN;
 
   useEffect(() => {
+    setIsLoaded(false);
+    setIsError(false);
     const fetchData = async () => {
       await axios
         .get(userUrl, { headers: { Authorization: AuthToken } })
@@ -25,13 +33,43 @@ const ServerPagination = () => {
             };
           });
           setUserDataList(userList);
+          setIsLoaded(true);
+          setIsError(false);
+        })
+        .catch((error) => {
+          setErrorMessage(error);
+          setIsError(true);
         });
     };
     fetchData();
+    // setIsLoaded(true);
     console.log("useeffect");
   }, [pageNumber]);
 
-  console.log("userDataList: ", userDataList);
+  const searchHandler = (searchInput) => {
+    if (searchInput !== "") {
+      let FilteredResult = userDataList.filter((user) => {
+        console.log("user: ", user);
+        return user.name.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0;
+      });
+      console.log(FilteredResult);
+      setSearchResult(FilteredResult);
+      setIsSearched(true);
+    } else {
+      setIsSearched(false);
+      // console.log("set false");
+    }
+  };
+
+  const clearHandler = (e) => {
+    if (e === null) {
+      setIsSearched(false);
+    }
+  };
+
+  useEffect(() => {}, [searchHandler]);
+
+  // console.log("userDataList: ", userDataList);
 
   const columns = [
     {
@@ -95,7 +133,29 @@ const ServerPagination = () => {
 
   return (
     <Fragment>
-      <Table columns={columns} dataSource={userDataList} pagination={false} />
+      <Search
+        className={classes.searchInput}
+        placeholder="input search text"
+        allowClear
+        onSearch={searchHandler}
+      />
+      {!isLoaded && (
+        <Spin tip="Loading...">
+          <Alert
+            message="Please wait"
+            description="waiting for data"
+            type="info"
+          />
+        </Spin>
+      )}
+      {isError && <Alert message={errorMessage} type="error" />}
+      {isLoaded && !isError && (
+        <Table
+          columns={columns}
+          dataSource={isSearched == false ? userDataList : searchResult}
+          pagination={false}
+        />
+      )}
       {/* <div>{row}</div> */}
       <div className={classes.pageButtons}>
         <Button onClick={prevHandler}>Prev</Button>
