@@ -1,7 +1,7 @@
-import { Table } from "antd";
+import { Avatar, Button, Table } from "antd";
 import axios from "axios";
-import { Button } from "bootstrap";
 import React, { Fragment, useEffect, useState } from "react";
+import classes from "./ServerPagination.module.css";
 
 const ServerPagination = () => {
   const [userDataList, setUserDataList] = useState([]);
@@ -50,8 +50,14 @@ const ServerPagination = () => {
     },
     {
       title: "Avatar",
-      dataIndex: "avatar",
-      key: "avatar",
+      dataIndex: "avatar_url",
+      key: "avatar_url",
+      render: (avatar_url) => (
+        <Fragment>
+          {console.log("avatar_url: ", avatar_url)}
+          <Avatar icon={<img src={avatar_url} />} />
+        </Fragment>
+      ),
     },
   ];
 
@@ -65,13 +71,13 @@ const ServerPagination = () => {
   for (let page = 1; page <= totalPages; page++) {
     // console.log("page: ", page);
     row.push(
-      <button
+      <Button
         onClick={(page) => {
           pageHandler(page);
         }}
       >
         {page}
-      </button>
+      </Button>
     );
   }
   // console.log("row: ", row);
@@ -88,12 +94,12 @@ const ServerPagination = () => {
 
   return (
     <Fragment>
-      <Table columns={columns} dataSource={userDataList} />
-      {/* <input onChange={(e) => pageHandler(e.target.value)}></input> */}
+      <Table columns={columns} dataSource={userDataList} pagination={false} />
       {/* <div>{row}</div> */}
-      {/* <div>{row}</div> */}
-      <button onClick={prevHandler}>Prev</button>
-      <button onClick={nextHandler}>Next</button>
+      <div className={classes.pageButtons}>
+        <Button onClick={prevHandler}>Prev</Button>
+        <Button onClick={nextHandler}>Next</Button>
+      </div>
     </Fragment>
   );
 };
