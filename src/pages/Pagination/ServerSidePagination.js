@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Table, Card } from "antd";
+import { Table, Card, Button } from "antd";
+import Search from "antd/lib/input/Search";
+import classes from "./ServerSidePagination.module.css";
 
 // var parse = require("parse-link-header");
 
@@ -8,20 +10,10 @@ const gittoken = process.env.REACT_APP_GITHUB_TOKEN;
 const ServerSidePagination = () => {
   const [userData, setUserData] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
-
+  const [searchResult, setSearchResult] = useState([]);
+  const [isSearched, setIsSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
-
-  const handlePrev = () => {
-    setPageNumber(pageNumber - 1);
-  };
-  const handleNext = () => {
-    setPageNumber(pageNumber + 1);
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, [pageNumber]);
 
   const { Meta } = Card;
   var myHeaders = new Headers();
@@ -32,6 +24,50 @@ const ServerSidePagination = () => {
   var requestOptions = {
     headers: myHeaders,
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [pageNumber]);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    await fetch(
+      `https://api.github.com/users?since=${pageNumber}&per_page=10`,
+      requestOptions
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw Error("could not fetch data");
+        }
+        return res.json();
+      })
+      .then((data) => setUserData(data))
+      .catch((error) => setError(error));
+
+    setLoading(false);
+  };
+
+  const searchHandler = (searchInput) => {
+    if (searchInput !== "") {
+      let serchedUser = userData.filter((user) => {
+        return user.login.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0;
+      });
+      console.log("search", serchedUser);
+      setSearchResult(serchedUser);
+      setIsSearched(true);
+    } else {
+      setIsSearched(false);
+    }
+  };
+
+  useEffect(() => {}, [searchHandler]);
+
+  // var linkHeader =
+  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="next", ` +
+  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="prev", `;
+
+  // var parsed = parse(linkHeader);
+  // console.log(parsed);
 
   const columns = [
     {
@@ -52,31 +88,6 @@ const ServerSidePagination = () => {
     },
   ];
 
-  // var linkHeader =
-  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="next", ` +
-  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="prev", `;
-
-  // var parsed = parse(linkHeader);
-  // console.log(parsed);
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    await fetch(
-      `https://api.github.com/users?since=${pageNumber}&per_page=5`,
-      requestOptions
-    )
-      .then((res) => {
-        if (!res.ok) {
-          throw Error("could not fetch data");
-        }
-        return res.json();
-      })
-      .then((data) => setUserData(data))
-      .catch((error) => setError(error));
-
-    setLoading(false);
-  };
-
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -85,38 +96,45 @@ const ServerSidePagination = () => {
     return <p>Something went wrong..</p>;
   }
 
+  const handlePrev = () => {
+    setPageNumber(pageNumber - 1);
+  };
+  const handleNext = () => {
+    setPageNumber(pageNumber + 1);
+  };
+
   return (
     <>
       <Card>
-        <Meta
-          title="Server Side pagination"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        />
+        <Meta title="Server Side pagination" className={classes.title} />
       </Card>
+
       <Card style={{ height: "800px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <Search
+          placeholder="search user"
+          allowClear
+          onSearch={searchHandler}
+          className={classes.search}
+        />
+        <div className={classes.table}>
           <Table
             rowKey="id"
             loading={loading}
             columns={columns}
-            dataSource={userData}
+            dataSource={isSearched == false ? userData : searchResult}
             pagination={false}
           ></Table>
         </div>
-        <div>Page {pageNumber} </div>
-        <div style={{ marginBottom: "50px" }}>
-          <button onClick={handlePrev}>prev</button>
-          <button onClick={handleNext}>next</button>
+        <div style={{ marginLeft: "700px" }}>
+          <div>Page {pageNumber} </div>
+          <div style={{ marginBottom: "50px" }}>
+            <Button type="primary" onClick={handlePrev}>
+              Prev
+            </Button>
+            <Button type="primary" onClick={handleNext}>
+              Next
+            </Button>
+          </div>
         </div>
       </Card>
     </>
