@@ -1,4 +1,4 @@
-import { Avatar, Button, Table } from "antd";
+import { Avatar, Button, Input, Table } from "antd";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ServerPagination.module.css";
@@ -6,8 +6,9 @@ import classes from "./ServerPagination.module.css";
 const ServerPagination = () => {
   const [userDataList, setUserDataList] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [limit, setLimit] = useState(10);
   const userUrl =
-    process.env.REACT_APP_USER_API + `?since=${pageNumber}&per_page=${10}`;
+    process.env.REACT_APP_USER_API + `?since=${pageNumber}&per_page=${limit}`;
   const AuthToken = "token" + process.env.REACT_APP_TOKEN;
 
   useEffect(() => {
@@ -66,7 +67,7 @@ const ServerPagination = () => {
   };
 
   const total = userDataList.length;
-  const totalPages = Math.ceil(total / 10);
+  const totalPages = Math.ceil(total / limit);
   let row = [];
   for (let page = 1; page <= totalPages; page++) {
     // console.log("page: ", page);
@@ -84,12 +85,12 @@ const ServerPagination = () => {
 
   const prevHandler = () => {
     if (pageNumber > 0) {
-      setPageNumber(pageNumber - 10);
+      setPageNumber(pageNumber - limit);
     }
   };
 
   const nextHandler = () => {
-    setPageNumber(pageNumber + 10);
+    setPageNumber(pageNumber + limit);
   };
 
   return (
