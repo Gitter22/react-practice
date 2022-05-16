@@ -14,7 +14,8 @@ const ClientSidePagination = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const [search, setSearch] = useState("");
+  const [isSearch, setIsSearch] = useState("");
+  const [searchApiData, setSearchApiData] = useState([]);
 
   const usersPerPage = 5;
   const pagesVisited = pageNumber * usersPerPage;
@@ -41,6 +42,7 @@ const ClientSidePagination = () => {
       })
       .then((data) => {
         setUsers(data);
+        setSearchApiData(data);
         setIsLoading(false);
         setError(null);
       })
@@ -61,6 +63,22 @@ const ClientSidePagination = () => {
     setPageNumber(selected);
   };
 
+  const handleFilter = (e) => {
+    if (e.target.value === "") {
+      setUsers(searchApiData);
+    } else {
+      const filterResult = searchApiData.filter((user) =>
+        user.login.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      if (filterResult.length > 0) {
+        setUsers(filterResult);
+      } else {
+        setUsers([{ login: "No data found", id: "" }]);
+      }
+    }
+    setIsSearch(e.target.value);
+  };
+
   return (
     <div className={classes.main}>
       <Card>
@@ -71,30 +89,13 @@ const ClientSidePagination = () => {
       <input
         type="text"
         placeholder="search"
-        value={search}
-        onChange={(e) => {
-          const currValue = e.target.value;
-          setSearch(currValue);
-          const filterData = users.filter((user) => {
-            console.log("filer data user", user);
-            if (
-              user.login.toLowerCase().includes(currValue, search.toLowerCase())
-            ) {
-              return user;
-            }
-          });
-          setUsers(filterData);
-        }}
+        value={isSearch}
+        onInput={(e) => handleFilter(e)}
       />
       {users.slice(pagesVisited, pagesVisited + usersPerPage).map((user) => {
         return (
           <div className={classes.user} key={user.id}>
-            <img
-              src={user.avatar_url}
-              height="150px"
-              width="150px"
-              alt="avtar"
-            />
+            <img src={user.avatar_url} height="150px" width="150px" />
             <h2>{user.login}</h2>
           </div>
         );
