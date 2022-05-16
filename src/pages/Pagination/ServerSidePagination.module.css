@@ -5,7 +5,7 @@
 }
 
 .search {
-  margin-left: 600px;
+  /* margin-left: 600px; */
   max-width: fit-content;
   justify-content: center;
   display: flex;

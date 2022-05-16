@@ -3,7 +3,7 @@ import { Table, Card, Button } from "antd";
 import Search from "antd/lib/input/Search";
 import classes from "./ServerSidePagination.module.css";
 
-// var parse = require("parse-link-header");
+var parse = require("parse-link-header");
 
 const gittoken = process.env.REACT_APP_GITHUB_TOKEN;
 
@@ -25,16 +25,18 @@ const ServerSidePagination = () => {
     headers: myHeaders,
   };
 
+  const userUrl = `https://api.github.com/users?since=${pageNumber}&per_page=10`;
+
+  let parsed = parse(`<${userUrl}>; rel="next", `);
+  console.log("parsed header: ", parsed);
+
   useEffect(() => {
     fetchUsers();
   }, [pageNumber]);
 
   const fetchUsers = async () => {
     setLoading(true);
-    await fetch(
-      `https://api.github.com/users?since=${pageNumber}&per_page=10`,
-      requestOptions
-    )
+    await fetch(userUrl, requestOptions)
       .then((res) => {
         if (!res.ok) {
           throw Error("could not fetch data");
@@ -62,13 +64,6 @@ const ServerSidePagination = () => {
 
   useEffect(() => {}, [searchHandler]);
 
-  // var linkHeader =
-  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="next", ` +
-  //   `<https://api.github.com/users?since=${pageNumber}&per_page=5>; rel="prev", `;
-
-  // var parsed = parse(linkHeader);
-  // console.log(parsed);
-
   const columns = [
     {
       title: "id",
@@ -83,7 +78,7 @@ const ServerSidePagination = () => {
     {
       title: "avatar_url",
       dataIndex: "avatar_url",
-      render: (row) => <img src={row} alt="" height="150px" />,
+      render: (row) => <img src={row} alt="" height="100px" />,
       key: "image",
     },
   ];
@@ -97,10 +92,12 @@ const ServerSidePagination = () => {
   }
 
   const handlePrev = () => {
-    setPageNumber(pageNumber - 1);
+    if (pageNumber > 0) {
+      setPageNumber(pageNumber - 10);
+    }
   };
   const handleNext = () => {
-    setPageNumber(pageNumber + 1);
+    setPageNumber(pageNumber + 10);
   };
 
   return (
@@ -125,8 +122,7 @@ const ServerSidePagination = () => {
             pagination={false}
           ></Table>
         </div>
-        <div style={{ marginLeft: "700px" }}>
-          <div>Page {pageNumber} </div>
+        <div style={{ justifyContent: "center" }}>
           <div style={{ marginBottom: "50px" }}>
             <Button type="primary" onClick={handlePrev}>
               Prev
