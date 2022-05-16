@@ -56,7 +56,8 @@ const ServerPagination = () => {
   let parsed = parse(`<${userUrl}>; rel="next", `);
   // console.log("parsed header: ", parsed);
 
-  const searchHandler = (searchInput) => {
+  const searchHandler = (event) => {
+    let searchInput = event.currentTarget.value;
     if (searchInput !== "") {
       let FilteredResult = userDataList.filter((user) => {
         // console.log("user: ", user);
@@ -147,7 +148,7 @@ const ServerPagination = () => {
         className={classes.searchInput}
         placeholder="input search text"
         allowClear
-        onSearch={searchHandler}
+        onChange={searchHandler}
       />
       <div className={classes.pageButtons}>
         <Button onClick={prevHandler}>Prev</Button>
