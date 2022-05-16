@@ -22,10 +22,16 @@ const ServerPagination = () => {
     setIsError(false);
     const fetchData = async () => {
       await axios
-        .get(userUrl, { headers: { Authorization: AuthToken } })
+        .get(userUrl, {
+          headers: {
+            Authorization: AuthToken,
+            Accept: "application/vnd.github.v3+json",
+          },
+        })
         .then((response) => {
           const userList = response.data.map((res) => {
             return {
+              key: res.id,
               id: res.id,
               name: res.login,
               avatar_url: res.avatar_url,
@@ -47,7 +53,7 @@ const ServerPagination = () => {
   }, [pageNumber]);
 
   let parse = require("parse-link-header");
-  let parsed = parse(userUrl);
+  let parsed = parse(`<${userUrl}>; rel="next", `);
   console.log("parsed header: ", parsed);
 
   const searchHandler = (searchInput) => {
@@ -143,6 +149,10 @@ const ServerPagination = () => {
         allowClear
         onSearch={searchHandler}
       />
+      <div className={classes.pageButtons}>
+        <Button onClick={prevHandler}>Prev</Button>
+        <Button onClick={nextHandler}>Next</Button>
+      </div>
       {!isLoaded && (
         <Spin tip="Loading...">
           <Alert
@@ -161,10 +171,6 @@ const ServerPagination = () => {
         />
       )}
       {/* <div>{row}</div> */}
-      <div className={classes.pageButtons}>
-        <Button onClick={prevHandler}>Prev</Button>
-        <Button onClick={nextHandler}>Next</Button>
-      </div>
     </Fragment>
   );
 };
