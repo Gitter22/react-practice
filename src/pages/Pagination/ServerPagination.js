@@ -54,7 +54,7 @@ const ServerPagination = () => {
 
   let parse = require("parse-link-header");
   let parsed = parse(`<${userUrl}>; rel="next", `);
-  console.log("parsed header: ", parsed);
+  // console.log("parsed header: ", parsed);
 
   const searchHandler = (searchInput) => {
     if (searchInput !== "") {
