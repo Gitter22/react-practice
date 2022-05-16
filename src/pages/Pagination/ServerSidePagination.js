@@ -13,7 +13,7 @@ const ServerSidePagination = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [isSearched, setIsSearched] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
 
   const { Meta } = Card;
   var myHeaders = new Headers();
@@ -43,8 +43,11 @@ const ServerSidePagination = () => {
         }
         return res.json();
       })
-      .then((data) => setUserData(data))
-      .catch((error) => setError(error));
+      .then((data) => {
+        setUserData(data);
+        setError(null);
+      })
+      .catch((error) => setError(error.message));
 
     setLoading(false);
   };
@@ -83,14 +86,6 @@ const ServerSidePagination = () => {
     },
   ];
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Something went wrong..</p>;
-  }
-
   const handlePrev = () => {
     if (pageNumber > 0) {
       setPageNumber(pageNumber - 10);
@@ -114,14 +109,22 @@ const ServerSidePagination = () => {
           className={classes.search}
         />
         <div className={classes.table}>
-          <Table
-            rowKey="id"
-            loading={loading}
-            columns={columns}
-            dataSource={isSearched == false ? userData : searchResult}
-            pagination={false}
-          ></Table>
+          {loading ? (
+            <p>Loading....</p>
+          ) : error ? (
+            <div>{error}</div>
+          ) : (
+            <Table
+              style={{ width: "500px" }}
+              rowKey="id"
+              loading={loading}
+              columns={columns}
+              dataSource={isSearched == false ? userData : searchResult}
+              pagination={false}
+            ></Table>
+          )}
         </div>
+
         <div style={{ justifyContent: "center" }}>
           <div style={{ marginBottom: "50px" }}>
             <Button type="primary" onClick={handlePrev}>
