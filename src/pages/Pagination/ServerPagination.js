@@ -6,7 +6,7 @@ import classes from "./ServerPagination.module.css";
 
 const ServerPagination = () => {
   const [userDataList, setUserDataList] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(0);
   const [limit, setLimit] = useState(10);
   const [searchResult, setSearchResult] = useState([]);
   const [isSearched, setIsSearched] = useState(false);
@@ -15,7 +15,7 @@ const ServerPagination = () => {
   const [isError, setIsError] = useState(false);
   const userUrl =
     process.env.REACT_APP_USER_API + `?since=${pageNumber}&per_page=${limit}`;
-  const AuthToken = "token" + process.env.REACT_APP_TOKEN;
+  const AuthToken = "token " + process.env.REACT_APP_TOKEN;
 
   useEffect(() => {
     setIsLoaded(false);
@@ -46,13 +46,17 @@ const ServerPagination = () => {
     console.log("useeffect");
   }, [pageNumber]);
 
+  let parse = require("parse-link-header");
+  let parsed = parse(userUrl);
+  console.log("parsed header: ", parsed);
+
   const searchHandler = (searchInput) => {
     if (searchInput !== "") {
       let FilteredResult = userDataList.filter((user) => {
-        console.log("user: ", user);
+        // console.log("user: ", user);
         return user.name.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0;
       });
-      console.log(FilteredResult);
+      // console.log(FilteredResult);
       setSearchResult(FilteredResult);
       setIsSearched(true);
     } else {
@@ -122,7 +126,7 @@ const ServerPagination = () => {
   // console.log("row: ", row);
 
   const prevHandler = () => {
-    if (pageNumber > 0) {
+    if (pageNumber > 1) {
       setPageNumber(pageNumber - limit);
     }
   };
