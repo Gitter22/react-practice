@@ -27,6 +27,20 @@ const projects = [
         challenges: "Unknown",
         path: "/server-side-pagination"
     },
+    {
+        id: 3,
+        title: "Server Pagination",
+        objective: "Render a simple list with Server side pagination. Github API shall be used to fetch a list of users which is paginated on Server side using params defined in GitHub API docs. It is required to send authenticated requests to Github API using authorization headers and personal access token.",
+        assignedAt: "2022-05-12",
+        startedAt: "2022-05-12",
+        endedAt: "N/A",
+        libraries: ["Ant Design", "Bootstrap"],
+        tags: ["Pagination", 'Server Side Pagination', 'env variables', 'authorization', 'Github'],
+        assignedTo: "Het Vaghasiya",
+        status: 0,
+        challenges: "Unknown",
+        path: "/server-pagination"
+    },
 ]
 
 export default projects
