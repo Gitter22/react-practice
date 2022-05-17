@@ -14,6 +14,7 @@ const ServerSidePagination = () => {
   const [isSearched, setIsSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sinceParam, setSinceParam] = useState(0);
 
   const { Meta } = Card;
   var myHeaders = new Headers();
@@ -25,22 +26,20 @@ const ServerSidePagination = () => {
     headers: myHeaders,
   };
 
-  const userUrl = `https://api.github.com/users?since=${pageNumber}&per_page=10`;
-
-  let parsed = parse(`<${userUrl}>; rel="next", `);
-  console.log("parsed header: ", parsed);
-
   useEffect(() => {
     fetchUsers();
   }, [pageNumber]);
 
   const fetchUsers = async () => {
     setLoading(true);
-    await fetch(userUrl, requestOptions)
+    await fetch(
+      `https://api.github.com/users?since=${pageNumber}&per_page=10`,
+      requestOptions
+    )
       .then((res) => {
-        if (!res.ok) {
-          throw Error("could not fetch data");
-        }
+        let linkHeader = res.headers.get("link");
+        const parsed = parse(linkHeader);
+        setSinceParam(parsed.next.since);
         return res.json();
       })
       .then((data) => {
@@ -48,7 +47,6 @@ const ServerSidePagination = () => {
         setError(null);
       })
       .catch((error) => setError(error.message));
-
     setLoading(false);
   };
 
@@ -57,7 +55,6 @@ const ServerSidePagination = () => {
       let serchedUser = userData.filter((user) => {
         return user.login.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0;
       });
-      console.log("search", serchedUser);
       setSearchResult(serchedUser);
       setIsSearched(true);
     } else {
@@ -88,11 +85,11 @@ const ServerSidePagination = () => {
 
   const handlePrev = () => {
     if (pageNumber > 0) {
-      setPageNumber(pageNumber - 10);
+      setSinceParam(0);
     }
   };
   const handleNext = () => {
-    setPageNumber(pageNumber + 10);
+    setPageNumber(sinceParam);
   };
 
   return (
@@ -117,7 +114,6 @@ const ServerSidePagination = () => {
             <Table
               style={{ width: "500px" }}
               rowKey="id"
-              loading={loading}
               columns={columns}
               dataSource={isSearched == false ? userData : searchResult}
               pagination={false}
@@ -128,7 +124,7 @@ const ServerSidePagination = () => {
         <div style={{ justifyContent: "center" }}>
           <div style={{ marginBottom: "50px" }}>
             <Button type="primary" onClick={handlePrev}>
-              Prev
+              First
             </Button>
             <Button type="primary" onClick={handleNext}>
               Next
