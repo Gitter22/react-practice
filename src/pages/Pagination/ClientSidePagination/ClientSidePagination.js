@@ -70,6 +70,7 @@ const ClientSidePagination = () => {
       const filterResult = searchApiData.filter((user) =>
         user.login.toLowerCase().includes(e.target.value.toLowerCase())
       );
+      console.log("filterResult", filterResult);
       if (filterResult.length > 0) {
         setUsers(filterResult);
       } else {
