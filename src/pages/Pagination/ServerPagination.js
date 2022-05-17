@@ -1,11 +1,14 @@
-import { Alert, Avatar, Button, Input, Table, Spin } from "antd";
+import { Alert, Avatar, Button, Input, Table, Spin, Anchor } from "antd";
 import Search from "antd/lib/input/Search";
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import classes from "./ServerPagination.module.css";
+const parse = require("parse-link-header");
+const { Link } = Anchor;
 
 const ServerPagination = () => {
   const [userDataList, setUserDataList] = useState([]);
+  console.log("userDataList: ", userDataList);
   const [pageNumber, setPageNumber] = useState(0);
   const [limit, setLimit] = useState(10);
   const [searchResult, setSearchResult] = useState([]);
@@ -13,6 +16,7 @@ const ServerPagination = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const [sinceParam, setSinceParam] = useState(0);
   const userUrl =
     process.env.REACT_APP_USER_API + `?since=${pageNumber}&per_page=${limit}`;
   const AuthToken = "token " + process.env.REACT_APP_TOKEN;
@@ -29,6 +33,8 @@ const ServerPagination = () => {
           },
         })
         .then((response) => {
+          const parsed = parse(response.headers.link);
+          setSinceParam(parsed.next.since);
           const userList = response.data.map((res) => {
             return {
               key: res.id,
@@ -36,6 +42,7 @@ const ServerPagination = () => {
               name: res.login,
               avatar_url: res.avatar_url,
               type: res.type,
+              html_url: res.html_url,
             };
           });
           setUserDataList(userList);
@@ -49,12 +56,7 @@ const ServerPagination = () => {
     };
     fetchData();
     // setIsLoaded(true);
-    console.log("useeffect");
   }, [pageNumber]);
-
-  let parse = require("parse-link-header");
-  let parsed = parse(`<${userUrl}>; rel="next", `);
-  // console.log("parsed header: ", parsed);
 
   const searchHandler = (event) => {
     let searchInput = event.currentTarget.value;
@@ -72,16 +74,6 @@ const ServerPagination = () => {
     }
   };
 
-  const clearHandler = (e) => {
-    if (e === null) {
-      setIsSearched(false);
-    }
-  };
-
-  useEffect(() => {}, [searchHandler]);
-
-  // console.log("userDataList: ", userDataList);
-
   const columns = [
     {
       title: "Id",
@@ -89,25 +81,34 @@ const ServerPagination = () => {
       key: "id",
     },
     {
+      title: "Avatar",
+      dataIndex: "avatar_url",
+      key: "avatar_url",
+      render: (avatar_url, data) => (
+        <Fragment>
+          <a href={data.html_url} target="_blank">
+            <Avatar icon={<img src={avatar_url} />} />
+          </a>
+        </Fragment>
+      ),
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (name, data) => (
+        // {
+        //   console.log("name: ", data.name, "html_url: ", data.html_url)
+        // }
+        <a href={data.html_url} target="_blank">
+          <div>{data.name}</div>
+        </a>
+      ),
     },
     {
       title: "Type",
       dataIndex: "type",
       key: "type",
-    },
-    {
-      title: "Avatar",
-      dataIndex: "avatar_url",
-      key: "avatar_url",
-      render: (avatar_url) => (
-        <Fragment>
-          {/* {console.log("avatar_url: ", avatar_url)} */}
-          <Avatar icon={<img src={avatar_url} />} />
-        </Fragment>
-      ),
     },
   ];
 
@@ -130,16 +131,13 @@ const ServerPagination = () => {
       </Button>
     );
   }
-  // console.log("row: ", row);
 
-  const prevHandler = () => {
-    if (pageNumber > 1) {
-      setPageNumber(pageNumber - limit);
-    }
+  const firstHandler = () => {
+    setPageNumber(0);
   };
 
   const nextHandler = () => {
-    setPageNumber(pageNumber + limit);
+    setPageNumber(sinceParam);
   };
 
   return (
@@ -151,7 +149,7 @@ const ServerPagination = () => {
         onChange={searchHandler}
       />
       <div className={classes.pageButtons}>
-        <Button onClick={prevHandler}>Prev</Button>
+        <Button onClick={firstHandler}>First</Button>
         <Button onClick={nextHandler}>Next</Button>
       </div>
       {!isLoaded && (
