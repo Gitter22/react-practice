@@ -8,7 +8,6 @@ const { Link } = Anchor;
 
 const ServerPagination = () => {
   const [userDataList, setUserDataList] = useState([]);
-  console.log("userDataList: ", userDataList);
   const [pageNumber, setPageNumber] = useState(0);
   const [limit, setLimit] = useState(10);
   const [searchResult, setSearchResult] = useState([]);
@@ -62,15 +61,12 @@ const ServerPagination = () => {
     let searchInput = event.currentTarget.value;
     if (searchInput !== "") {
       let FilteredResult = userDataList.filter((user) => {
-        // console.log("user: ", user);
         return user.name.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0;
       });
-      // console.log(FilteredResult);
       setSearchResult(FilteredResult);
       setIsSearched(true);
     } else {
       setIsSearched(false);
-      // console.log("set false");
     }
   };
 
@@ -97,9 +93,6 @@ const ServerPagination = () => {
       dataIndex: "name",
       key: "name",
       render: (name, data) => (
-        // {
-        //   console.log("name: ", data.name, "html_url: ", data.html_url)
-        // }
         <a href={data.html_url} target="_blank">
           <div>{data.name}</div>
         </a>
@@ -120,7 +113,6 @@ const ServerPagination = () => {
   const totalPages = Math.ceil(total / limit);
   let row = [];
   for (let page = 1; page <= totalPages; page++) {
-    // console.log("page: ", page);
     row.push(
       <Button
         onClick={(page) => {
