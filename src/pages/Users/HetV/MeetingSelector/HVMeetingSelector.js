@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import MeetingDisplay from "./MeetingDisplay";
 
 const HVMeetingSelector = () => {
-    return (
-        <div>HVMeetingSelector</div>
-    )
-}
+  return (
+    <>
+      <h1>meeting date selector</h1>
+      <MeetingDisplay />
+    </>
+  );
+};
 
-export default HVMeetingSelector
+export default HVMeetingSelector;
