@@ -6,7 +6,7 @@ import classes from "./ServerPagination.module.css";
 const parse = require("parse-link-header");
 const { Link } = Anchor;
 
-const ServerPagination = () => {
+const HVServerPagination = () => {
   const [userDataList, setUserDataList] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -166,4 +166,4 @@ const ServerPagination = () => {
   );
 };
 
-export default ServerPagination;
+export default HVServerPagination;

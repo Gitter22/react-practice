@@ -7,7 +7,7 @@ const githubAccessToken = process.env.REACT_APP_GITHUB_TOKEN;
 
 const { Meta } = Card;
 
-const ClientSidePagination = () => {
+const PBClientSidePagination = () => {
   const [users, setUsers] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
 
@@ -116,4 +116,4 @@ const ClientSidePagination = () => {
   );
 };
 
-export default ClientSidePagination;
+export default PBClientSidePagination;

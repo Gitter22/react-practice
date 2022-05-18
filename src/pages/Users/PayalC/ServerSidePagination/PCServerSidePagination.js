@@ -7,7 +7,7 @@ var parse = require("parse-link-header");
 
 const gittoken = process.env.REACT_APP_GITHUB_TOKEN;
 
-const ServerSidePagination = () => {
+const PCServerSidePagination = () => {
   const [userData, setUserData] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [searchResult, setSearchResult] = useState([]);
@@ -62,7 +62,7 @@ const ServerSidePagination = () => {
     }
   };
 
-  useEffect(() => {}, [searchHandler]);
+  useEffect(() => { }, [searchHandler]);
 
   const columns = [
     {
@@ -136,4 +136,4 @@ const ServerSidePagination = () => {
   );
 };
 
-export default ServerSidePagination;
+export default PCServerSidePagination;

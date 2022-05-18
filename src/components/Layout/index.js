@@ -16,9 +16,6 @@ const AppLayout = () => {
       <Content>
         <Outlet />
       </Content>
-      <Footer className="p-3 text-center fixed-bottom">
-        Agile Infoways Pvt Ltd.
-      </Footer>
     </Layout>
   );
 };
