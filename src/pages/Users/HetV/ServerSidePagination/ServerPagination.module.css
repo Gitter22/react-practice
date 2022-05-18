@@ -1,0 +1,13 @@
+.pageButtons {
+    align-items: center;
+}
+
+.pageButtons button{
+    margin: 10px;
+    position: relative;
+}
+
+.searchInput{
+    margin: 8px;
+    max-width: fit-content;
+}
