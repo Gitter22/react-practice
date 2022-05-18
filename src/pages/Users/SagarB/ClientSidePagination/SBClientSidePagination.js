@@ -1,9 +1,152 @@
-import React from 'react'
+import { Spin, Alert, Table, Tag, Avatar, Button, Input } from "antd";
+import "antd/dist/antd.css";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import classes from './SBClientSidePagination.module.css';
 
 const SBClientSidePagination = () => {
-    return (
-        <div>SBClientSidePagination</div>
-    )
-}
+  const { Search } = Input;
+  const token = process.env.REACT_APP_TOKEN;
+  const base_url = process.env.REACT_APP_BASE_URL + total_records;
+  const [isLoading, setIsLoading] = useState(false);
+  const [userList, setUserList] = useState([]);
+  const [paginatedList, setPaginatedList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const total_records = 100;
+  const page_limit = 7;
+  const total_pages = Math.ceil(total_records / page_limit);
 
-export default SBClientSidePagination
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      await axios
+        .get(base_url, {
+          headers: {
+            Authorization: "token " + token,
+          },
+        })
+        .then((res) => {
+          const response = res.data.map((user) => {
+            return {
+              key: user.id,
+              id: user.id,
+              avatar: user.avatar_url,
+              name: user.login,
+              type: user.type,
+            };
+          });
+          setUserList(response);
+        });
+    }
+    fetchData();
+    setIsLoading(false);
+  }, []);
+
+  const pageNumber = (page=1) => {
+    const start = (page - 1) * page_limit;
+    const end = start + page_limit;
+    const paginatedUsers = userList.slice(start, end);
+    setPaginatedList(paginatedUsers);
+  };
+
+  useEffect(() => {
+    pageNumber(currentPage);
+  }, [userList]);
+
+  const PrevPageHandler = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      pageNumber(currentPage - 1);
+    } else {
+      pageNumber(1);
+    }
+  };
+
+  const NextPageHandler = () => {
+    if (currentPage < total_pages) {
+      setCurrentPage(currentPage + 1);
+      pageNumber(currentPage + 1);
+    } else {
+      pageNumber(total_pages);
+    }
+  };
+
+  const columns = [
+    {
+      title: "Id",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Avatar",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (text) => <Avatar size="large" icon={<img src={text} />} />,
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
+      render: (text) => {
+        let color = "volcano";
+        if (text === "User") {
+          color = "green";
+        }
+        return (
+          <Tag color={color} key={text}>
+            {text.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
+  ];
+
+  return (
+    <div
+      style={{
+        display: "block",
+        width: "96rem",
+        padding: 30,
+      }}
+    >
+      <h4 style={{ fontSize: 30, fontFamily: "initial" }}>
+        Client Side Pagination
+      </h4>
+      <div className={classes.pagination}>
+        <Button onClick={PrevPageHandler}>Prev</Button>
+        <Button>Page {currentPage} of {total_pages}</Button>
+        <Button onClick={NextPageHandler}>Next</Button>
+        <div className={classes['search-pagination']}>
+          <Search
+            placeholder="Enter Page Number"
+            allowClear
+            onChange={(e) => pageNumber(e.target.value)}
+          />
+        </div>
+      </div>
+      {!isLoading && (
+        <Table
+          columns={columns}
+          dataSource={paginatedList}
+          pagination={false}
+        />
+      )}
+      {isLoading && paginatedList && (
+        <Spin tip="Loading...">
+          <Alert
+            message="Server not responding!!"
+            description="Please refresh the page or wait!"
+          />
+        </Spin>
+      )}
+    </div>
+  );
+};
+
+export default SBClientSidePagination;
