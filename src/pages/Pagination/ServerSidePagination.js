@@ -117,7 +117,6 @@ const ServerSidePagination = () => {
             <Table
               style={{ width: "500px" }}
               rowKey="id"
-              loading={loading}
               columns={columns}
               dataSource={isSearched == false ? userData : searchResult}
               pagination={false}
