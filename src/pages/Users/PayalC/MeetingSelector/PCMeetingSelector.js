@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import DisplayResult from "./DisplayResult";
 
 const PCMeetingSelector = () => {
-    return (
-        <div>PCMeetingSelector</div>
-    )
-}
+  return (
+    <>
+      <p>PCMeetingSelector</p>
+      <DisplayResult />
+    </>
+  );
+};
 
-export default PCMeetingSelector
+export default PCMeetingSelector;
