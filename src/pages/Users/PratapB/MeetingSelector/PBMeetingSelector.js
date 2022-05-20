@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import MeetingShow from "./MeetingShow";
 
 const PBMeetingSelector = () => {
-    return (
-        <div>PBMeetingSelector</div>
-    )
-}
+  return (
+    <div>
+      PBMeetingSelector
+      <MeetingShow />
+    </div>
+  );
+};
 
-export default PBMeetingSelector
+export default PBMeetingSelector;
