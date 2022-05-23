@@ -7,7 +7,7 @@ const DisplayResult = () => {
   const [isEntered, setIsEntered] = useState(false);
   const [startDate, setStartdate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [day, setDay] = useState(null);
+  const [day, setDay] = useState("");
 
   const dateHandler = (entered, start = null, end = null) => {
     setIsEntered(entered);
@@ -20,27 +20,25 @@ const DisplayResult = () => {
     }
   };
 
-  const dayHandler = (dayInfo = null) => {
+  const dayHandler = (dayInfo) => {
     setDay(dayInfo);
-    // console.log("day", day);
   };
 
-  // console.log("day", day);
-
   const result =
-    startDate && endDate !== "" ? (
-      <p>
-        your selected date is {startDate} to {endDate}
-      </p>
+    startDate && endDate && day !== "" ? (
+      <textarea
+        value={`your selected dates is ${startDate} to ${endDate} and days is ${day}`}
+        style={{ height: "100px", width: "400px" }}
+        onChange={dateHandler}
+      ></textarea>
     ) : (
       <p> select date is </p>
     );
 
   return (
     <>
-      <DatePicker dateSubmit={dateHandler} />
+      <DatePicker day={day} dateSubmit={dateHandler} />
       <br />
-      <p>select Day for meeting</p>
       {isEntered && (
         <DayPicker start={startDate} end={endDate} dayHandler={dayHandler} />
       )}

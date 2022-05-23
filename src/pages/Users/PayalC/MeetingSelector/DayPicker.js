@@ -26,14 +26,15 @@ const DayPicker = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    props.dayHandler(dayInfo.response);
-    console.log("sdrsr");
-    // alert(dayInfo.response);
+
+    props.dayHandler(dayInfo.days);
   };
 
   return (
     <>
       <Card>
+        <p>select Day for meeting</p>
+
         <form>
           <div>
             <input
@@ -102,7 +103,7 @@ const DayPicker = (props) => {
             <input type="submit" onClick={onSubmit} />
           </div>
 
-          <div>
+          {/* <div>
             <textarea
               name="response"
               value={dayInfo.response}
@@ -110,7 +111,7 @@ const DayPicker = (props) => {
               style={{ height: "50px" }}
               onChange={handleChange}
             ></textarea>
-          </div>
+          </div> */}
         </form>
       </Card>
     </>
