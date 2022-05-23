@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import DatePicker from "./DatePicker";
 import DayPicker from "./DayPicker";
-import { Card } from "antd";
+
 
 const MeetingShow = (props) => {
   const [enter, setEnter] = useState(false);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [day, setDay] = useState("");
 
-  const dayHandler = (enter, start = null, end = null) => {
+  const dateHandler = (enter, start = null, end = null) => {
     setEnter(enter);
     setStartDate(start);
     setEndDate(end);
   };
+
+  const dayHandler = (dayItem) => {
+    setDay(dayItem);
+  };
+
   const selectedDatesHandler = (dayItem) => {
     const date = new Date(startDate);
     console.log(date);
@@ -21,30 +27,37 @@ const MeetingShow = (props) => {
       dates.concat(new Date(date));
       date.setDate(date.getDate() + 1);
     }
+    console.log(dates);
   };
 
   const dateDisplay =
     startDate && endDate !== "" ? (
-      <p>
-        date : {startDate} to {endDate}
-      </p>
+      <textarea
+        value={`your selected dates is ${startDate} to ${endDate} and days is ${day}`}
+        style={{ height: "100px", width: "400px" }}
+        onChange={dateHandler}
+      ></textarea>
     ) : (
-      <p>day {dayHandler}</p>
+      // <p>
+      //   date : {startDate} to {endDate}
+      // </p>
+      <p>Please Select Date ... </p>
     );
 
   return (
     <>
-      <DatePicker dayHandler={dayHandler} />
+      <DatePicker day={day} dateHandler={dateHandler} />
       <br />
       {enter && (
         <DayPicker
           start={startDate}
           end={endDate}
+          dayHandler={dayHandler}
           selectedDatesHandler={selectedDatesHandler}
         />
       )}
       <br />
-      {enter && <Card>{dateDisplay}</Card>}
+      {enter && dateDisplay}
     </>
   );
 };

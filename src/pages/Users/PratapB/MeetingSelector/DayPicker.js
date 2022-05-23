@@ -7,7 +7,18 @@ const DayPicker = (props) => {
   const handleChange = (event) => {
     const { value, checked } = event.target;
     const { days } = dayItem;
-    console.log("devdas", days);
+
+    // if (event.currentTarget.checked === false) {
+    //   setDayItem(
+    //     dayItem.filter((item) => {
+    //       return item !== event.currentTarget.name;
+    //     })
+    //   );
+    // }
+
+    // if (dayItem.indexOf(event.currentTarget.name) === -1) {
+    //   setDayItem(dayItem.concat(event.currentTarget.name));
+    // }
 
     if (checked) {
       setDayItem({
@@ -22,7 +33,10 @@ const DayPicker = (props) => {
     }
   };
 
-  const submitHandler = () => {};
+  const submitHandler = (e) => {
+    e.preventDefault();
+    props.dayHandler(dayItem.days);
+  };
 
   return (
     <>
@@ -32,7 +46,7 @@ const DayPicker = (props) => {
           <div>
             <input
               type="checkbox"
-              name="days"
+              name="Monday"
               value="Monday"
               onChange={handleChange}
             />
@@ -41,7 +55,7 @@ const DayPicker = (props) => {
           <div>
             <input
               type="checkbox"
-              name="days"
+              name="Tuesday"
               value="Tuesday"
               onChange={handleChange}
             />
@@ -50,8 +64,8 @@ const DayPicker = (props) => {
           <div>
             <input
               type="checkbox"
-              name="days"
-              value="Wensday"
+              name="Wednesday"
+              value="Wednesday"
               onChange={handleChange}
             />
             <label>Wensday</label>
@@ -59,7 +73,7 @@ const DayPicker = (props) => {
           <div>
             <input
               type="checkbox"
-              name="days"
+              name="Thursday"
               value="Thursday"
               onChange={handleChange}
             />
@@ -69,7 +83,7 @@ const DayPicker = (props) => {
             <div>
               <input
                 type="checkbox"
-                name="days"
+                name="Friday"
                 value="Friday"
                 onChange={handleChange}
               />
@@ -78,7 +92,7 @@ const DayPicker = (props) => {
             <div>
               <input
                 type="checkbox"
-                name="days"
+                name="Saturday"
                 value="Saturday"
                 onChange={handleChange}
               />
@@ -87,22 +101,13 @@ const DayPicker = (props) => {
             <div>
               <input
                 type="checkbox"
-                name="days"
+                name="Sunday"
                 value="Sunday"
                 onChange={handleChange}
               />
               <label>Sunday</label>
             </div>
             <input type="submit" onClick={submitHandler} />
-          </div>
-
-          <div>
-            <textarea
-              name="response"
-              value={dayItem.response}
-              style={{ height: "50px" }}
-              onChange={handleChange}
-            />
           </div>
         </form>
       </Card>
