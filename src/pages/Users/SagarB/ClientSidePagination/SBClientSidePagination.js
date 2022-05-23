@@ -2,18 +2,17 @@ import { Spin, Alert, Table, Tag, Avatar, Button, Input } from "antd";
 import "antd/dist/antd.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import classes from './SBClientSidePagination.module.css';
+import classes from "./SBClientSidePagination.module.css";
 
 const SBClientSidePagination = () => {
-  const { Search } = Input;
   const token = process.env.REACT_APP_TOKEN;
-  const base_url = process.env.REACT_APP_BASE_URL + total_records;
   const [isLoading, setIsLoading] = useState(false);
   const [userList, setUserList] = useState([]);
   const [paginatedList, setPaginatedList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const total_records = 100;
   const page_limit = 7;
+  const base_url = process.env.REACT_APP_BASE_URL + total_records;
   const total_pages = Math.ceil(total_records / page_limit);
 
   useEffect(() => {
@@ -51,7 +50,7 @@ const SBClientSidePagination = () => {
 
   useEffect(() => {
     pageNumber(currentPage);
-  }, [userList]);
+  }, [userList, currentPage]);
 
   const PrevPageHandler = () => {
     if (currentPage > 1) {
@@ -71,6 +70,19 @@ const SBClientSidePagination = () => {
     }
   };
 
+  const SearchHandler = (event) => {
+    var value = event.target.value;
+    if (value === "") {
+      pageNumber(1);
+    } else {
+      setPaginatedList(
+        userList.filter((user) => {
+          return user.name.toLowerCase().indexOf(value.toLowerCase()) >= 0;
+        })
+      );
+    }
+  };
+
   const columns = [
     {
       title: "Id",
@@ -81,7 +93,7 @@ const SBClientSidePagination = () => {
       title: "Avatar",
       dataIndex: "avatar",
       key: "avatar",
-      render: (text) => <Avatar size="large" icon={<img src={text} />} />,
+      render: (text) => <Avatar size="large" icon={<img src={text} alt="" />} />,
     },
     {
       title: "Name",
@@ -119,15 +131,30 @@ const SBClientSidePagination = () => {
         Client Side Pagination
       </h4>
       <div className={classes.pagination}>
-        <Button onClick={PrevPageHandler}>Prev</Button>
-        <Button>Page {currentPage} of {total_pages}</Button>
-        <Button onClick={NextPageHandler}>Next</Button>
-        <div className={classes['search-pagination']}>
-          <Search
+        <div className={classes.pagination_div}>
+          <Button onClick={PrevPageHandler}>Prev</Button>
+          <Button className={classes.page_button}>
+            Page {currentPage} of {total_pages}
+          </Button>
+          <Button onClick={NextPageHandler}>Next</Button>
+        </div>
+        <div className={classes["search-pagination"]}>
+          <Input
             placeholder="Enter Page Number"
             allowClear
-            onChange={(e) => pageNumber(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value <= total_pages && e.target.value > 0) {
+                pageNumber(e.target.value);
+                setCurrentPage(e.target.value);
+              } else {
+                pageNumber(1);
+                setCurrentPage(1);
+              }
+            }}
           />
+        </div>
+        <div className={classes["search-bar"]}>
+          <Input placeholder="Search..." allowClear onChange={SearchHandler} />
         </div>
       </div>
       {!isLoading && (

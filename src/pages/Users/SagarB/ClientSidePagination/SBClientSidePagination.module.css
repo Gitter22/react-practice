@@ -6,5 +6,19 @@
 .search-pagination{
     margin-top: -32px;
     width: 201px;
-    margin-left: 15rem;
+    margin-left: 15.1rem;
+}
+
+.search-bar{
+    margin-top: -32px;
+    width: 201px;
+    margin-left: 28rem;
+}
+
+.pagination_div {
+    margin-right: 5px;
+}
+
+.pagination_div .page_button {
+    width: 7rem;
 }
