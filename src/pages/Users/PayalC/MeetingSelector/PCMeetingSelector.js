@@ -4,7 +4,7 @@ import DisplayResult from "./DisplayResult";
 const PCMeetingSelector = () => {
   return (
     <>
-      <p>PCMeetingSelector</p>
+      <h2 style={{ textAlign: "center" }}>PCMeetingSelector</h2>
       <DisplayResult />
     </>
   );

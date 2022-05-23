@@ -23,11 +23,36 @@ const DatePicker = (props) => {
   return (
     <>
       <Card>
+        <h3>select Date for meeting</h3>
+        <br />
         <form onSubmit={handleSubmit}>
           <label htmlFor="startdate">Start Date</label>
-          <input type="date" value={startDate} onChange={startHandler} />
+          <input
+            type="date"
+            value={startDate}
+            onChange={startHandler}
+            // disable={[
+            //   new Date(),
+            //   { daysOfWeek: [0, 6] },
+            //   { before: new Date() },
+            // ]}
+          />
+          <br />
+          <br />
           <label htmlFor="enddate">End Date</label>
-          <input type="date" value={endDate} onChange={endHandler} />
+          <input
+            type="date"
+            value={endDate}
+            onChange={endHandler}
+            min={startDate}
+            // disable={[
+            //   new Date(),
+            //   { daysOfWeek: [0, 6] },
+            //   { before: new Date() },
+            // ]}
+
+            // min={disablePastDate()}
+          />
           <br />
           <br />
 

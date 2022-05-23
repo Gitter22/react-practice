@@ -5,19 +5,14 @@ import DayPicker from "./DayPicker";
 
 const DisplayResult = () => {
   const [isEntered, setIsEntered] = useState(false);
-  const [startDate, setStartdate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartdate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [day, setDay] = useState("");
 
-  const dateHandler = (entered, start = null, end = null) => {
+  const dateHandler = (entered, start, end) => {
     setIsEntered(entered);
     setStartdate(start);
     setEndDate(end);
-
-    if (Date.parse(startDate) >= Date.parse(endDate)) {
-      alert("End date should be greater than Start date");
-      setEndDate("");
-    }
   };
 
   const dayHandler = (dayInfo) => {
@@ -27,21 +22,19 @@ const DisplayResult = () => {
   const result =
     startDate && endDate && day !== "" ? (
       <textarea
-        value={`your selected dates is ${startDate} to ${endDate} and days is ${day}`}
+        value={`your selected date is ${startDate} to ${endDate} and days is ${day}`}
         style={{ height: "100px", width: "400px" }}
         onChange={dateHandler}
       ></textarea>
     ) : (
-      <p> select date is </p>
+      <p> select date & day </p>
     );
 
   return (
     <>
-      <DatePicker day={day} dateSubmit={dateHandler} />
+      <DatePicker dateSubmit={dateHandler} />
       <br />
-      {isEntered && (
-        <DayPicker start={startDate} end={endDate} dayHandler={dayHandler} />
-      )}
+      {isEntered && <DayPicker dayHandler={dayHandler} />}
       <br />
       {isEntered && <Card>{result}</Card>}
     </>

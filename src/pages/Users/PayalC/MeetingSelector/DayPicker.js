@@ -33,7 +33,7 @@ const DayPicker = (props) => {
   return (
     <>
       <Card>
-        <p>select Day for meeting</p>
+        <h3>select Day for meeting</h3>
 
         <form>
           <div>
@@ -102,16 +102,6 @@ const DayPicker = (props) => {
             </div>
             <input type="submit" onClick={onSubmit} />
           </div>
-
-          {/* <div>
-            <textarea
-              name="response"
-              value={dayInfo.response}
-              data={dayInfo.response}
-              style={{ height: "50px" }}
-              onChange={handleChange}
-            ></textarea>
-          </div> */}
         </form>
       </Card>
     </>
