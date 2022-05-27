@@ -54,6 +54,10 @@ const users = [{
         id: 1,
         projectId: 1,
         path: '/client-side-pagination'
+    },{
+        id: 2,
+        projectId: 3,
+        path: '/meeting-selector'
     }]
 }, {
     id: 5,

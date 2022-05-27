@@ -1,0 +1,54 @@
+.pagination {
+    margin-bottom: 27px;
+    margin-top: 18px;
+}
+
+.pagination h3 {
+    font-family: 'initial';
+}
+
+.search-pagination {
+    margin-top: -32px;
+    width: 201px;
+    margin-left: 15.1rem;
+}
+
+.search-bar {
+    margin-top: -32px;
+    width: 201px;
+    margin-left: 28rem;
+}
+
+.pagination_div {
+    margin-right: 5px;
+}
+
+.pagination_div .page_button {
+    width: 7rem;
+}
+
+.date_input {
+    margin: 2rem;
+    margin-left: 4px;
+}
+
+.weekdays {
+    margin-left: 0rem;
+    margin-top: 16px;
+    margin-bottom: 17px;
+}
+
+.weekdays label {
+    display: inline-block;
+    padding-right: 19px;
+    white-space: nowrap;
+}
+
+.weekdays input {
+    vertical-align: middle;
+}
+
+.weekdays label span {
+    vertical-align: middle;
+    margin-left: 4px;
+}

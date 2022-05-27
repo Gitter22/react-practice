@@ -32,6 +32,7 @@ const SBClientSidePagination = () => {
               avatar: user.avatar_url,
               name: user.login,
               type: user.type,
+              user: user,
             };
           });
           setUserList(response);
@@ -97,9 +98,9 @@ const SBClientSidePagination = () => {
     },
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => <a>{text}</a>,
+      dataIndex: "user",
+      key: "user",
+      render: (user) => <a href={user.html_url} target="_blank"><div>{user.login}</div></a>
     },
     {
       title: "Type",
